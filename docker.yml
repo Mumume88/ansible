@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  tasks:
+   - name: docker
+     apt: pkg= {{ item }}
+     with_items:
+      -docker
+    
+     
+

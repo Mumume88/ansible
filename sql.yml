@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  tasks:
+   - name: sql
+     systemd:
+      name: mysql.service
+      state: started
+    
+     
+
