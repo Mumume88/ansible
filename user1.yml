@@ -1,0 +1,28 @@
+---
+- hosts: all
+  become: yes
+  vars_files:
+    - vault.yml
+
+  tasks:
+    - name: Create user1
+      user:
+        name: user1
+        state: present
+        groups: users
+        shell: /bin/bash
+
+    - name: Create SSH key
+      authorized_key:
+        user: user1
+        key: "{{ vault_ssh_key }}"
+        state: present
+
+    - name: Generate SSH key
+      shell: ssh-keygen -t rsa -b 4096 -f /home/user1/.ssh/id_rsa -N ''
+
+    - name: Set SSH key in authorized_keys
+      authorized_key:
+        user: user1
+        key: "{{ lookup('file', '/home/user1/.ssh/id_rsa.pub') }}"
+        state: present

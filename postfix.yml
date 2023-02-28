@@ -1,0 +1,27 @@
+---
+- hosts: localhost
+  become: true
+  tasks:
+    - name: Install Postfix
+      apt:
+        name: postfix
+        state: present
+      tags: init_postfix
+
+    - name: Start postfix service
+      service:
+        name: postfix
+        state: started
+      tags: init_postfix
+
+    - name: Stop postfix service
+      service:
+        name: postfix
+        state: stopped
+      tags: drop_postfix
+
+    - name: Uninstall Postfix
+      apt:
+        name: postfix
+        state: absent
+      tags: drop_postfix
