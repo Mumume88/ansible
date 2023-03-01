@@ -1,0 +1,5 @@
+---
+# defaults file for dnsmasq
+dnsmaq_port: 53
+dnsmasq_interface: eth0
+dns_servers: 8.8.8.8
