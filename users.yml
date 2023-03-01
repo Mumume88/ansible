@@ -1,0 +1,23 @@
+---
+- hosts: all
+  become: true
+  vars:
+    users:
+      - user2
+      - user3
+  tasks:
+    - name: Create group superusers
+      group: name=superusers state=present
+
+    - name: Add users to the superusers group
+      user: name="{{ item }}" groups=superusers append=yes
+      with_items: "{{ users }}"
+
+    - name: Configure sudoers file
+      lineinfile:
+        path: /etc/sudoers
+        line: "%superusers ALL=(ALL) NOPASSWD: ALL"
+        validate: visudo -cf %s
+
+    - name: Set root password
+      user: name=root password="{{ 'password' | password_hash('sha512') }}"
