@@ -1,0 +1,28 @@
+# tasks file for nginx
+---
+- name: Install nginx and php-fpm
+  become: true
+  apt:
+    name:
+      - nginx
+      - php-fpm
+    state: present
+
+- name: Configure nginx
+  become: true
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/default
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart nginx
+
+- name: Create index.php file
+  become: true
+  copy:
+    content: "<?php phpinfo();?>"
+    dest: /opt/nginx/ansible/index.php
+    owner: www-data
+    group: www-data
+    mode: 0644
