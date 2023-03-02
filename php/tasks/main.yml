@@ -1,0 +1,29 @@
+- name: Install PHP-FPM
+  apt:
+    name: php-fpm
+    state: latest
+
+- name: Configure PHP-FPM
+  template:
+    src: php-fpm.conf.j2
+    dest: /etc/php/7.0/fpm/pool.d/www.conf
+  notify: restart php-fpm
+
+- name: Start PHP-FPM
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - php7.0-fpm
+
+- name: Enable PHP processing in Nginx
+  lineinfile:
+    dest: /etc/nginx/sites-available/default
+    regexp: "^#location ~ \\.php$"
+    line: "location ~ \\.php$ { fastcgi_pass 127.0.0.1:9000; }"
+
+- name: Restart php-fpm
+  service:
+    name: php-fpm
+    state: restarted
